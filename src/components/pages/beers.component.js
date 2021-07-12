@@ -1,6 +1,7 @@
 import React from "react";
 import {Link} from "react-router-dom";
 import { withRouter } from "react-router";
+import {getBeers} from "../../services/beers.service";
 
 export class Beers extends React.Component {
     constructor(props) {
@@ -31,14 +32,9 @@ export class Beers extends React.Component {
         const query = searchParams.get("query");
         if(this.state.search !== query) {
             this.setState(Object.assign(this.state, {search: query}));
-            const url = query
-                ? `https://api.punkapi.com/v2/beers?beer_name=${query}`
-                : `https://api.punkapi.com/v2/beers`
-            fetch(url).then(result => {
-                return result.json().then(data => {
-                    this.setState({beers: data, isLoaded: true});
-                })
-            })
+            getBeers(query).then(data => {
+                this.setState({beers: data, isLoaded: true});
+            });
         }
     }
 
@@ -77,7 +73,7 @@ export class Beers extends React.Component {
     }
 }
 
-class BeerListItem extends React.Component {
+export class BeerListItem extends React.Component {
     render() {
         const beer = this.props.beer;
         return (
